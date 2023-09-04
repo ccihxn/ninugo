@@ -21,6 +21,5 @@ public class UserDTO {
     private int userState;
     @NonNull
     private String role;
-    @NonNull
     private LocalDateTime createdAt;
 }
