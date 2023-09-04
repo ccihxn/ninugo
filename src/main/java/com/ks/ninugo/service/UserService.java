@@ -8,7 +8,13 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     UserMapper userMapper;
-    public void insertUser(UserDTO userDTO) {
+    private void insertUser(UserDTO userDTO) {
         userMapper.insertUser(userDTO);
+    }
+    private UserDTO findUserById(int userId) {
+        return userMapper.findUserById(userId);
+    }
+    private void deleteUserById(int userId) {
+        userMapper.deleteUserById(userId);
     }
 }
