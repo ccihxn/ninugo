@@ -1,6 +1,16 @@
 <mapper>
-    <insert id="insertUser" parameterType="UserDTO">
+    <insert id="insertUser">
         insert into user (nickname, login_id, password, email, user_state, role, created_at)
                 values (#{nickname}, #{loginId}, #{password}, #{email}, #{userState}, #{role}, NOW())
     </insert>
+    <select id="findUserById" resultType="UserDTO">
+        select *
+        from user
+        where id = #{userId}
+    </select>
+    <update id="deleteUserById">
+        update user
+        set user_state = 1
+        where id = #{userId}
+    </update>
 </mapper>
