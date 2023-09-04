@@ -1,5 +1,6 @@
 package com.ks.ninugo.dto;
 
+
 import lombok.Data;
 import lombok.NonNull;
 
@@ -7,20 +8,19 @@ import java.time.LocalDateTime;
 
 @Data
 public class UserDTO {
+
+    private int id;
     @NonNull
-    int id;
+    private String nickname;
     @NonNull
-    String nickname;
+    private String loginId;
     @NonNull
-    String loginId;
+    private String password;
     @NonNull
-    String password;
+    private String email;
+    private int userState;
     @NonNull
-    String email;
+    private String role;
     @NonNull
-    int userState;
-    @NonNull
-    String role;
-    @NonNull
-    LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 }
