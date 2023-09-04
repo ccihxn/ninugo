@@ -17,7 +17,10 @@ public class UserDTO {
     String password;
     @NonNull
     String email;
+    @NonNull
     int userState;
+    @NonNull
     String role;
+    @NonNull
     LocalDateTime createdAt;
 }
