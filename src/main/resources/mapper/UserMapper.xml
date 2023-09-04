@@ -1,0 +1,6 @@
+<mapper>
+    <insert id="insertUser" parameterType="UserDTO">
+        insert into user (nickname, login_id, password, email, user_state, role, created_at)
+                values (#{nickname}, #{loginId}, #{password}, #{email}, #{userState}, #{role}, NOW())
+    </insert>
+</mapper>
