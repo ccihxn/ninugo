@@ -35,3 +35,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### ProPerties ###
+application-*.properties
+
+### DS_Store ###
+**/.DS_Store
