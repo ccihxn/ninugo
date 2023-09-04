@@ -13,4 +13,9 @@
         set user_state = 1
         where id = #{userId}
     </update>
+    <update id="updateUser">
+        update user
+        set nickname = #{nickname}, password = #{password}
+        where id = #{id}
+    </update>
 </mapper>

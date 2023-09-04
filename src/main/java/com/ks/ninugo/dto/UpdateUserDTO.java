@@ -1,2 +1,10 @@
-package com.ks.ninugo.dto;public class UpdateUserDTO {
+package com.ks.ninugo.dto;
+
+import lombok.Data;
+
+@Data
+public class UpdateUserDTO {
+    int id;
+    String nickname;
+    String password;
 }
