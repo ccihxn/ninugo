@@ -1,5 +1,6 @@
 package com.ks.ninugo.service;
 
+import com.ks.ninugo.dto.UpdateUserDTO;
 import com.ks.ninugo.dto.UserDTO;
 import com.ks.ninugo.mapper.UserMapper;
 import org.springframework.stereotype.Service;
@@ -16,5 +17,8 @@ public class UserService {
     }
     private void deleteUserById(int userId) {
         userMapper.deleteUserById(userId);
+    }
+    private void updateUser(UpdateUserDTO updateUserDTO) {
+        userMapper.updateUser(updateUserDTO);
     }
 }
