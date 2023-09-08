@@ -26,4 +26,7 @@ public class UserService {
     public void updateUser(UpdateUserDTO updateUserDTO) {
         userMapper.updateUser(updateUserDTO);
     }
+    public void insertQueue(int userId) {
+        userMapper.insertQueue(userId);
+    }
 }

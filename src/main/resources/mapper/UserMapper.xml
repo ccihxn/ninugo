@@ -22,4 +22,8 @@
         set nickname = #{nickname}, password = #{password}
         where id = #{id}
     </update>
+    <insert id="inserQueue">
+        insert into queue (user_id, matching_state, start_time, matched_time)
+                values (#{userId}, #{queueState}, NOW())
+    </insert>
 </mapper>

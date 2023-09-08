@@ -12,4 +12,5 @@ public interface UserMapper {
     UserDTO findUserById(int userId);
     void deleteUserById(int userId);
     void updateUser(UpdateUserDTO updateUserDTO);
+    void insertQueue(int userId);
 }
