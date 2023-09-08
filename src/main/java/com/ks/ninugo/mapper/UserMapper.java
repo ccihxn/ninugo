@@ -13,4 +13,6 @@ public interface UserMapper {
     void deleteUserById(int userId);
     void updateUser(UpdateUserDTO updateUserDTO);
     void insertQueue(int userId);
+    void matchedQueue();
+    void deleteQueue();
 }

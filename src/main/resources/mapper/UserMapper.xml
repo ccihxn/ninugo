@@ -24,6 +24,25 @@
     </update>
     <insert id="inserQueue">
         insert into queue (user_id, matching_state, start_time, matched_time)
-                values (#{userId}, #{queueState}, NOW())
+                values (#{userId}, #{queueState}, NOW(), null)
     </insert>
+    <update id="matchedQueue">
+        UPDATE queue
+        SET matching_state = 2, matched_time = NOW()
+        WHERE id IN (
+            SELECT id
+            FROM (SELECT id
+                  FROM queue
+                  ORDER BY id LIMIT 2) AS subquery
+        );
+    </update>
+    <delete id="deleteQueue">
+        delete from queue
+        where id IN (
+            SELECT id
+            FROM (SELECT id
+                  FROM queue
+                  ORDER BY id LIMIT 2) AS subquery
+        ); AND matching_state = 2
+    </delete>
 </mapper>
