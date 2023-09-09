@@ -1,5 +1,6 @@
 package com.ks.ninugo.service;
 
+import com.ks.ninugo.dto.ChatDTO;
 import com.ks.ninugo.dto.UpdateUserDTO;
 import com.ks.ninugo.dto.UserDTO;
 import com.ks.ninugo.mapper.UserMapper;
@@ -39,7 +40,16 @@ public class UserService {
     public void matchedQueue() {
         userMapper.matchedQueue();
     }
+
     public void deleteQueue() {
         userMapper.deleteQueue();
+    }
+
+    public void createChat(ChatDTO chatDTO) {
+        userMapper.createChat(chatDTO);
+    }
+
+    public void updateLastChat(int chatId) {
+        userMapper.updateLastChat(chatId);
     }
 }

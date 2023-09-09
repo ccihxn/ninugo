@@ -28,21 +28,29 @@
     </insert>
     <update id="matchedQueue">
         UPDATE queue
-        SET matching_state = 2, matched_time = NOW()
-        WHERE id IN (
-            SELECT id
-            FROM (SELECT id
-                  FROM queue
-                  ORDER BY id LIMIT 2) AS subquery
-        );
+        SET matching_state = 2,
+            matched_time   = NOW()
+        WHERE id IN (SELECT id
+                     FROM (SELECT id
+                           FROM queue
+                           ORDER BY id LIMIT 2) AS subquery)
     </update>
     <delete id="deleteQueue">
-        delete from queue
-        where id IN (
-            SELECT id
-            FROM (SELECT id
-                  FROM queue
-                  ORDER BY id LIMIT 2) AS subquery
-        ); AND matching_state = 2
+        delete
+        from queue
+        where id IN (SELECT id
+                     FROM (SELECT id
+                           FROM queue
+                           ORDER BY id LIMIT 2) AS subquery)
+          AND matching_state = 2
     </delete>
+    <insert id="createChat">
+        insert into chatting_room (user1_id, user1_state, user2_id, user2_state, matching_time, last_chat)
+                values (#{user1Id}, #{user1State}, #{user2Id}, #{user2State}, NOW(), null)
+    </insert>
+    <insert id="updateLastChat">
+        update chatting_room
+        set last_chat_id = lastChatId
+        where id lastChatId = (select max(id) from messages where chat_id = #{chatId})
+    </insert>
 </mapper>
