@@ -22,8 +22,4 @@ public interface UserMapper {
     void matchedQueue();
 
     void deleteQueue();
-
-    void createChat(ChatDTO chatDTO);
-
-    void updateLastChat(int chatId);
 }

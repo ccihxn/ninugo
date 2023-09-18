@@ -45,11 +45,5 @@ public class UserService {
         userMapper.deleteQueue();
     }
 
-    public void createChat(ChatDTO chatDTO) {
-        userMapper.createChat(chatDTO);
-    }
 
-    public void updateLastChat(int chatId) {
-        userMapper.updateLastChat(chatId);
-    }
 }
