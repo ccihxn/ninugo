@@ -105,6 +105,12 @@ public class JwtTokenProvider implements AuthenticationProvider {
         logger.info("[validationToken] 토큰 유효성 검증 시작");
         try{
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            // 토큰의 알고리즘를 확인합니다.
+            if (!"HS256".equals(claims.getHeader().getAlgorithm())) {
+                logger.info("[validationToken] 허용되지 않는 알고리즘: " + claims.getHeader().getAlgorithm());
+                return false;
+            }
+
             return !claims.getBody().getExpiration().before(new Date());
         } catch (io.jsonwebtoken.SignatureException e) {
             logger.info("[validationToken] JWT 서명이 유효하지 않음");
