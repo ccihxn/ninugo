@@ -10,7 +10,7 @@
     <select id="findUserById" resultType="UserDTO">
         select *
         from user
-        where id = #{userId}
+        where login_id = #{loginId}
     </select>
     <update id="deleteUserById">
         update user
@@ -24,6 +24,6 @@
     </update>
     <insert id="inserQueue">
         insert into queue (user_id, matching_state, start_time, matched_time)
-                values (#{userId}, #{queueState}, NOW())
+                values (#{userId}, #{queueState}, NOW(), null)
     </insert>
 </mapper>

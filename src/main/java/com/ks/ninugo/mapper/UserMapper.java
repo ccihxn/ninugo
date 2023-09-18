@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserMapper {
     void insertUser(UserDTO userDTO);
-    UserDTO findUserById(int userId);
+    UserDTO findUserByLoginId(String LoginId);
     void deleteUserById(int userId);
     void updateUser(UpdateUserDTO updateUserDTO);
     void insertQueue(int userId);

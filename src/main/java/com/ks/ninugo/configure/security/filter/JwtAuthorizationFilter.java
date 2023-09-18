@@ -1,47 +1,99 @@
 package com.ks.ninugo.configure.security.filter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ks.ninugo.configure.security.provider.JwtTokenProvider;
-import com.ks.ninugo.dto.UserDTO;
+import com.ks.ninugo.configure.security.PrincipalDetails;
+import com.ks.ninugo.configure.security.PrincipalDetailsService;
+import com.ks.ninugo.service.UserService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+
+import java.io.IOException;
+import java.security.Key;
+import java.util.Date;
 
 @Slf4j
-public class JwtAuthorizationFilter extends UsernamePasswordAuthenticationFilter {
+@Component
+public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
-    private final JwtTokenProvider jwtTokenProvider;
-    private final AuthenticationManager authenticationManager;
+    @Value("${spring.jwt.secret}")
+    private String SECRET_KEY;
 
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenProvider = jwtTokenProvider;
+    private final PrincipalDetailsService principalDetailsService;
 
-        setFilterProcessesUrl("/user/login");
+    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserService userService, PrincipalDetailsService principalDetailsService) {
+        super(authenticationManager);
+        this.principalDetailsService = principalDetailsService;
     }
+
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        log.info("[attemptAuthentication] 인증 시도");
-        ObjectMapper om = new ObjectMapper();
-        UserDTO userDTO = null;
-
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
         try {
-            userDTO = om.readValue(request.getInputStream(), UserDTO.class);
-        }catch (Exception e) {
-            throw new BadCredentialsException("인증 정보를 읽어올 수 없습니다.", e);
+            String tokenHeader = request.getHeader("Authorization");
+            String jwtToken = extractTokenFromHeader(tokenHeader);
+
+            if (jwtToken != null && isValid(jwtToken)) {
+                SecurityContextHolder.getContext().setAuthentication(getAuthentication(jwtToken));
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        log.info("[attemptAuthentication] 인증 시도 유저 정보: {}", userDTO);
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(userDTO.getLoginId(), userDTO.getPassword());
 
-        return authenticationManager.authenticate(authenticationToken);
+        chain.doFilter(request, response);
     }
-    // success 시 호출
 
+    private String extractTokenFromHeader(String tokenHeader) {
+        if (StringUtils.hasText(tokenHeader) && tokenHeader.startsWith("Bearer ")) {
+            return tokenHeader.substring(7); // Remove "Bearer " prefix
+        }
+        return null;
+    }
+
+    private Authentication getAuthentication(String jwtToken) {
+        String email = getEmail(jwtToken);
+        PrincipalDetails userDetails = (PrincipalDetails) principalDetailsService.loadUserByUsername(email);
+        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+    }
+
+    private String getEmail(String jwtToken) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(getSecretKey())
+                .parseClaimsJws(jwtToken)
+                .getBody();
+        return claims.getSubject();
+    }
+
+    private boolean isValid(String jwtToken) {
+        try {
+            Jws<Claims> jws = Jwts.parser()
+                    .setSigningKey(getSecretKey())
+                    .parseClaimsJws(jwtToken);
+
+            return jws != null &&
+                    jws.getBody().getSubject() != null &&
+                    !jws.getBody().getExpiration().before(new Date());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private Key getSecretKey() {
+        byte[] keyBytes = SECRET_KEY.getBytes();
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
 }

@@ -6,6 +6,8 @@ import com.ks.ninugo.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserService {
     private final UserMapper userMapper;
@@ -17,8 +19,9 @@ public class UserService {
         userMapper.insertUser(userDTO);
         System.out.println(userDTO);
     }
-    public UserDTO findUserById(int userId) {
-        return userMapper.findUserById(userId);
+    public Optional<UserDTO> findUserByLoginId(String loginId) {
+        UserDTO userDTO = userMapper.findUserByLoginId(loginId);
+        return Optional.ofNullable(userDTO);
     }
     public void deleteUserById(int userId) {
         userMapper.deleteUserById(userId);
