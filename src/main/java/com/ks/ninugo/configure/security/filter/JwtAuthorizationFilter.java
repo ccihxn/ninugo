@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,6 +28,7 @@ import java.util.Date;
 
 @Slf4j
 @Component
+@PropertySource("classpath:application-jwt.properties") // 프로퍼티 파일 경로 지정
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     @Value("${spring.jwt.secret}")

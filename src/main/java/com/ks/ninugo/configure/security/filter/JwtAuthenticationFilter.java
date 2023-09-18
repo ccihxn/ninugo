@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import com.ks.ninugo.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,6 +28,7 @@ import java.util.Optional;
 
 @Slf4j
 @Component
+@PropertySource("classpath:application-jwt.properties") // 프로퍼티 파일 경로 지정
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final UserService userService;
     private final long VALID_TIME = 1000L * 60 * 60; // 1시간만 토큰 유효
